@@ -8,8 +8,8 @@ let CONFIG = {
   textColor: '#ebdbb2',
   fontSize: '1.75em',
   clockSize: '2em',
-  showClock: false,
-  militaryClock: false,
+  showClock: true,
+  militaryClock: true,
   alwaysNewTab: false,
   gistID: '',
   links: [],
@@ -787,7 +787,7 @@ const commands = {
 
   // Amazon
   'a': (args) => {
-    const url = 'https://amazon.com', search = '/s/?field-keywords=';
+    const url = 'https://amazon.es', search = '/s/?field-keywords=';
     if (args.length == 0) redirect(url)
     else redirect(buildURL(url, search, args.join(' ')));
   },
@@ -816,6 +816,12 @@ const commands = {
   // MDN web docs
   'mdn': (args) => {
     const url = 'https://developer.mozilla.org', search = '/search?q=';
+    if (args.length ==0) redirect(url)
+    else redirect(buildURL(url, search, args.join(' ')))
+  }
+  // Google Cloud Platform
+  'gcp': (args) => {
+    const url = 'https://console.cloud.google.com', search = '/search;q=';
     if (args.length ==0) redirect(url)
     else redirect(buildURL(url, search, args.join(' ')))
   }
