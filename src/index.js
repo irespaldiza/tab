@@ -588,87 +588,6 @@ const commands = {
     else redirect(buildURL(url, search, args));
   },
 
-  // Reddit
-  'r': (args) => {
-    const url = 'https://reddit.com', search = '/r/';
-    let query = (args.length > 0) ? args[0] : '';
-
-    const validSort = (sort) => {
-      return (['hot', 'new', 'rising', 'controversial', 'top', 'gilded', 'wiki', 'promoted'].includes(sort))
-    };
-    const validRange = (range) => {
-      return (['day', 'week', 'month', 'year', 'all'].includes(range))
-    };
-
-    switch(args.length) {
-      // Given nothing
-      case 0:
-        redirect(url);
-        break;
-
-      // Given a subreddit
-      case 1:
-        redirect(buildURL(url, search, args[0]));
-        break;
-
-      // Given subreddit and sort
-      case 2:
-        query += (validSort(args[1]))
-          ? '/' + args[1]
-          : '';
-        redirect(url + search + query);
-        break;
-
-      // Given subreddit, sort and range
-      case 3:
-        if (['top', 'controversial'].includes(args[1])) {
-          query += (validRange(args[2]))
-            ? '/' + args[1] + '?t=' + args[2]
-            : '';
-        } else {
-          query += (validSort(args[1]))
-            ? '/' + args[1]
-            : '';
-        }
-        redirect(url + search + query);
-        break;
-    }
-  },
-
-  // Hacker News
-  'hn': (args) => {
-    const url = 'https://news.ycombinator.com';
-    if (args.length == 0) {
-      redirect(url);
-    } else {
-      switch(args[0]) {
-        case 'new':
-          redirect(url + '/newest');
-          break;
-
-        case 'comments':
-          redirect(url + '/newcomments');
-          break;
-
-        case 'show':
-          redirect(url + '/show');
-          break;
-
-        case 'ask':
-          redirect(url + '/ask');
-          break;
-
-        case 'jobs':
-          redirect(url + '/jobs');
-          break;
-
-        case 'submit':
-          redirect(url + '/submit');
-          break;
-      }
-    }
-  },
-
   // Youtube
   'y': (args) => {
     const url = 'https://youtube.com', search = '/results?search_query=';
@@ -684,7 +603,7 @@ const commands = {
 
   // Wikipedia
   'w': (args) => {
-    const url = 'https://wikipedia.org', search = '/w/index.php?title=Special:Search&search=';
+    const url = 'https://es.wikipedia.org', search = '/w/index.php?title=Special:Search&search=';
     if (args.length == 0) redirect(url)
     else redirect(buildURL(url, search, args.join(' ')));
   },
@@ -701,27 +620,6 @@ const commands = {
     const url = 'https://gist.github.com', search = '/';
     if (args.length == 0) redirect(url)
     else redirect(url + search + args.join(''));
-  },
-
-  // Wolfram Alpha
-  'wa': (args) => {
-    const url = 'http://wolframalpha.com', search = '/input/?i=';
-    if (args.length == 0) redirect(url)
-    else redirect(buildURL(url, search, args.join(' ')));
-  },
-
-  // Netflix
-  'n': (args) => {
-    const url = 'https://netflix.com', search = '/search?q=';
-    if (args.length == 0) redirect(url)
-    else redirect(buildURL(url, search, args.join(' ')));
-  },
-
-  // Internet Movie Database
-  'imdb': (args) => {
-    const url = 'http://imdb.com', search = '/find?s=all&q=';
-    if (args.length == 0) redirect(url)
-    else redirect(buildURL(url, search, args.join(' ')));
   },
 
   // Google Maps
@@ -764,44 +662,9 @@ const commands = {
     else redirect(buildURL(url, search, args.join(' ')));
   },
 
-  // Trello
-  'tr': (args) => {
-    const url = 'https://trello.com', search = '/search?q=';
-    if (args.length == 0) redirect(url)
-    else redirect(buildURL(url, search, args.join(' ')));
-  },
-
-  // Dictionary
-  'dict': (args) => {
-    const url = 'http://dictionary.com', search = '/browse/';
-    if (args.length == 0) redirect(url)
-    else redirect(buildURL(url, search, args.join(' ')));
-  },
-
-  // Thesaurus
-  'thes': (args) => {
-    const url = 'http://thesaurus.com', search = '/browse/';
-    if (args.length == 0) redirect(url)
-    else redirect(buildURL(url, search, args.join(' ')));
-  },
-
   // Amazon
   'a': (args) => {
     const url = 'https://amazon.es', search = '/s/?field-keywords=';
-    if (args.length == 0) redirect(url)
-    else redirect(buildURL(url, search, args.join(' ')));
-  },
-
-  // Node package manager
-  'npm': (args) => {
-    const url = 'https://npmjs.org', search = '/search?q=';
-    if (args.length == 0) redirect(url)
-    else redirect(buildURL(url, search, args.join(' ')));
-  },
-
-  // Python package index
-  'pypi': (args) => {
-    const url = 'https://pypi.org', search = '/search/?q=';
     if (args.length == 0) redirect(url)
     else redirect(buildURL(url, search, args.join(' ')));
   },
@@ -813,17 +676,60 @@ const commands = {
     else redirect(buildURL(url, search, args.join(' ')));
   },
 
-  // MDN web docs
-  'mdn': (args) => {
-    const url = 'https://developer.mozilla.org', search = '/search?q=';
-    if (args.length ==0) redirect(url)
-    else redirect(buildURL(url, search, args.join(' ')))
-  },
   // Google Cloud Platform
   'gcp': (args) => {
     const url = 'https://console.cloud.google.com', search = '/search;q=';
     if (args.length ==0) redirect(url)
     else redirect(buildURL(url, search, args.join(' ')))
+  },
+
+  'aws': (args) => {
+    const url = 'https://aws.amazon.com',  search = '?searchQuery=';
+    if (args.length ==0) redirect(url)
+    else redirect(buildURL(url, search, args.join(' ')))
+  },
+
+  'do': (args) => {
+    const url = 'https://cloud.digitalocean.com/',  search = '';
+    if (args.length ==0) redirect(url)
+    else redirect(buildURL(url, search, args.join(' ')))
+  },
+
+  'stg': (args) => {
+    const url = 'https://www.siteground.es',  search = '';
+    if (args.length ==0) redirect(url)
+    else redirect(buildURL(url, search, args.join(' ')))
+  },
+
+  'tf': (args) => {
+    const url = 'https://app.terraform.io',  search = '';
+    if (args.length ==0) redirect(url)
+    else redirect(buildURL(url, search, args.join(' ')))
+  },
+
+  'ok': (args) => {
+    const url = 'https://okteto.com',  search = '';
+    if (args.length ==0) redirect(url)
+    else redirect(buildURL(url, search, args.join(' ')))
+  },
+
+  'cf': (args) => {
+    const url = 'https://cloudflare.com',  search = '';
+    if (args.length ==0) redirect(url)
+    else redirect(buildURL(url, search, args.join(' ')))
+  },
+
+  'hs': (args) => {
+    const url = 'https://www.hubspot.com',  search = '';
+    if (args.length ==0) redirect(url)
+    else redirect(buildURL(url, search, args.join(' ')))
+  },
+
+  'k8s': (args) => {
+    const url = 'https://kubernetes.io/docs/',  search = 'search/?q=';
+    if (args.length ==0) redirect(url)
+    else redirect(buildURL(url, search, args.join(' ')))
   }
+
 }
 })() // closure
