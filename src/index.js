@@ -818,7 +818,7 @@ const commands = {
     const url = 'https://developer.mozilla.org', search = '/search?q=';
     if (args.length ==0) redirect(url)
     else redirect(buildURL(url, search, args.join(' ')))
-  }
+  },
   // Google Cloud Platform
   'gcp': (args) => {
     const url = 'https://console.cloud.google.com', search = '/search;q=';

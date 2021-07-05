@@ -16,5 +16,12 @@
     "webpack-cli": "^3.3.8",
     "webpack-dev-server": "^3.8.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "name": "tab",
+  "version": "0.1.1",
+  "description": "test",
+  "main": "index.js",
+  "repository": "git@github.com:irespaldiza/tab.git",
+  "author": "Iñaki Respaldiza <i.respaldiza@gmail.com>",
+  "private": false
 }
