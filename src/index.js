@@ -615,6 +615,13 @@ const commands = {
     else redirect(url + search + args.join(''));
   },
 
+  // Okteto wiki
+  'wiki': (args) => {
+    const url = 'https://github.com/okteto/wiki', search = '/';
+    if (args.length == 0) redirect(url)
+    else redirect(url + search + args.join(''));
+  }
+
   // GitHub Gist
   'gist': (args) => {
     const url = 'https://gist.github.com', search = '/';
