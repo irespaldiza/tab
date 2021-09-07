@@ -620,7 +620,7 @@ const commands = {
     const url = 'https://github.com/okteto/wiki', search = '/';
     if (args.length == 0) redirect(url)
     else redirect(url + search + args.join(''));
-  }
+  },
 
   // GitHub Gist
   'gist': (args) => {
