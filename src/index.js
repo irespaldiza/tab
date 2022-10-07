@@ -615,9 +615,9 @@ const commands = {
     else redirect(url + search + args.join(''));
   },
 
-  // Okteto wiki
-  'wiki': (args) => {
-    const url = 'https://github.com/okteto/wiki', search = '/';
+  // Okteto GitHub
+  'gho': (args) => {
+    const url = 'https://github.com/okteto', search = '/';
     if (args.length == 0) redirect(url)
     else redirect(url + search + args.join(''));
   },
