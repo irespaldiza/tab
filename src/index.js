@@ -706,6 +706,12 @@ import './style.css';
       else redirect(buildURL(url, search, args.join(' ')))
     },
 
+    'gpt': (args) => {
+      const url = 'https://chat.openai.com/chat', search = '';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')))
+    },
+
     'k8s': (args) => {
       const url = 'https://kubernetes.io/docs/', search = 'search/?q=';
       if (args.length == 0) redirect(url)
