@@ -662,6 +662,12 @@ import './style.css';
       else redirect(buildURL(url, search, args.join(' ')));
     },
 
+    // Okteto Community
+    'oc': (args) => {
+      const url = 'https://community.okteto.com/';
+      redirect(url)
+    },
+
     // Stack Overflow
     'so': (args) => {
       const url = 'https://stackoverflow.com', search = '/search?q=';
