@@ -722,6 +722,12 @@ import './style.css';
       const url = 'https://kubernetes.io/docs/', search = 'search/?q=';
       if (args.length == 0) redirect(url)
       else redirect(buildURL(url, search, args.join(' ')))
+    },
+
+    'sheet': (args) => {
+      const url = 'https://docs.google.com/spreadsheets/', search = 'u/0/?tgif=d&q=';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')))
     }
 
   }
