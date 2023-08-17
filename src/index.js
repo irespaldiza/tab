@@ -622,6 +622,13 @@ import './style.css';
       else redirect(url + search + args.join(''));
     },
 
+    // Okteto Notifications
+    'ghn': (args) => {
+      const url = 'https://github.com/notifications', search = '/';
+      if (args.length == 0) redirect(url)
+      else redirect(url + search + args.join(''));
+    },
+
     // Google Maps
     'map': (args) => {
       const url = 'https://google.com/maps', search = '/search/';
