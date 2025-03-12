@@ -599,12 +599,6 @@ import "./style.css";
       }
     },
 
-    // Help
-    help: (args) => {
-      newTab = true;
-      redirect("https://github.com/koryschneider/tab#readme");
-    },
-
     // Google
     g: (args) => {
       const url = "https://google.com",
@@ -634,14 +628,6 @@ import "./style.css";
       }
     },
 
-    // Wikipedia
-    w: (args) => {
-      const url = "https://es.wikipedia.org",
-        search = "/w/index.php?title=Special:Search&search=";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
-    },
-
     // GitHub
     gh: (args) => {
       const url = "https://github.com",
@@ -653,14 +639,6 @@ import "./style.css";
     // Okteto GitHub
     gho: (args) => {
       const url = "https://github.com/okteto",
-        search = "/";
-      if (args.length == 0) redirect(url);
-      else redirect(url + search + args.join(""));
-    },
-
-    // Okteto Notifications
-    ghn: (args) => {
-      const url = "https://github.com/notifications",
         search = "/";
       if (args.length == 0) redirect(url);
       else redirect(url + search + args.join(""));
@@ -711,20 +689,6 @@ import "./style.css";
       else redirect(buildURL(url, search, args.join(" ")));
     },
 
-    // Okteto Community
-    oc: (args) => {
-      const url = "https://community.okteto.com/";
-      redirect(url);
-    },
-
-    // Stack Overflow
-    so: (args) => {
-      const url = "https://stackoverflow.com",
-        search = "/search?q=";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
-    },
-
     // Google Cloud Platform
     gcp: (args) => {
       const url = "https://console.cloud.google.com",
@@ -733,36 +697,8 @@ import "./style.css";
       else redirect(buildURL(url, search, args.join(" ")));
     },
 
-    do: (args) => {
-      const url = "https://cloud.digitalocean.com/",
-        search = "";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
-    },
-
-    stg: (args) => {
-      const url = "https://www.siteground.es",
-        search = "";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
-    },
-
-    ok: (args) => {
-      const url = "https://okteto.com",
-        search = "";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
-    },
-
     cf: (args) => {
       const url = "https://cloudflare.com",
-        search = "";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
-    },
-
-    hs: (args) => {
-      const url = "https://www.hubspot.com",
         search = "";
       if (args.length == 0) redirect(url);
       else redirect(buildURL(url, search, args.join(" ")));
@@ -792,6 +728,25 @@ import "./style.css";
         search = "u/0/?tgif=d&q=";
       if (args.length == 0) redirect(url);
       else redirect(buildURL(url, search, args.join(" ")));
+    },
+
+    tf: (args) => {
+      const url = "https://app.terraform.io/app/organizations",
+        search = "?q=";
+      if (args.length == 0) redirect(url);
+      else redirect(buildURL(url, search, args.join(" ")));
+    },
+
+    cco: (args) => {
+      const url = "https://app.circleci.com/organization/github/okteto",
+        search = "";
+      if (args.length == 0) redirect;
+    },
+    jira: (args) => {
+      const url =
+          "https://okteto.atlassian.net/jira/software/c/projects/PLAT/boards/8",
+        search = "";
+      if (args.length == 0) redirect;
     },
   };
 })(); // closure
