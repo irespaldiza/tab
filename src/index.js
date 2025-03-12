@@ -723,13 +723,6 @@ import "./style.css";
       redirect(url);
     },
 
-    sheet: (args) => {
-      const url = "https://docs.google.com/spreadsheets/",
-        search = "u/0/?tgif=d&q=";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
-    },
-
     tf: (args) => {
       const url = "https://app.terraform.io/app/organizations",
         search = "?q=";
@@ -738,15 +731,19 @@ import "./style.css";
     },
 
     cco: (args) => {
-      const url = "https://app.circleci.com/organization/github/okteto",
-        search = "";
-      if (args.length == 0) redirect;
+      const url = "https://app.circleci.com/organization/github/okteto";
+      redirect(url);
     },
-    jira: (args) => {
+
+    jo: (args) => {
       const url =
-          "https://okteto.atlassian.net/jira/software/c/projects/PLAT/boards/8",
-        search = "";
-      if (args.length == 0) redirect;
+        "https://okteto.atlassian.net/jira/software/c/projects/PLAT/boards/8";
+      redirect(url);
+    },
+
+    sheet: (args) => {
+      const url = "https://docs.google.com/spreadsheets/";
+      redirect(url);
     },
   };
 })(); // closure
