@@ -745,5 +745,13 @@ import "./style.css";
       const url = "https://docs.google.com/spreadsheets/";
       redirect(url);
     },
+    s: (args) => {
+      const url = "https://app.slack.com/";
+      redirect(url);
+    },
+    n: (args) => {
+      const url = "https://www.notion.so/";
+      redirect(url);
+    },
   };
 })(); // closure
