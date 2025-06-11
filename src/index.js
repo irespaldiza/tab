@@ -753,5 +753,10 @@ import "./style.css";
       const url = "https://www.notion.so/";
       redirect(url);
     },
+
+    z: (args) => {
+      const url = "https://us02web.zoom.us/myhome";
+      redirect(url);
+    },
   };
 })(); // closure
