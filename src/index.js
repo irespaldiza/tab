@@ -746,7 +746,7 @@ import "./style.css";
       redirect(url);
     },
     s: (args) => {
-      const url = "https://app.slack.com/";
+      const url = "https://app.slack.com/client/T2WRCR06N/C08RD8JCFCN";
       redirect(url);
     },
     n: (args) => {
