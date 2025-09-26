@@ -754,7 +754,7 @@ import "./style.css";
       redirect(url);
     },
     p: (args) => {
-      const url = "https://product.okteto.dev/";
+      const url = "https://product.okteto.dev/spaces/irespaldiza";
       redirect(url);
     },
     z: (args) => {
