@@ -746,14 +746,17 @@ import "./style.css";
       redirect(url);
     },
     s: (args) => {
-      const url = "https://app.slack.com/client/T2WRCR06N/C08RD8JCFCN";
+      const url = "https://app.slack.com/client/T2WRCR06N";
       redirect(url);
     },
     n: (args) => {
       const url = "https://www.notion.so/";
       redirect(url);
     },
-
+    p: (args) => {
+      const url = "https://product.okteto.dev/";
+      redirect(url);
+    },
     z: (args) => {
       const url = "https://us02web.zoom.us/myhome";
       redirect(url);
