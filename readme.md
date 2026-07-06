@@ -12,3 +12,9 @@ To get places on the web faster, with less distraction.
 ### How
 
 See [basic usage and examples][usage] or the [complete documentation][commands] (or both).
+
+### Brave
+
+The [`brave-extension`](brave-extension) directory contains a minimal Manifest
+V3 extension that opens this start page in every new Brave tab. See the
+[installation instructions](brave-extension/README.md).
