@@ -9,8 +9,8 @@ import "./style.css";
     caretColor: "auto",
     fontSize: "1.75em",
     clockSize: "2em",
-    showClock: true,
-    militaryClock: true,
+    showClock: false,
+    militaryClock: false,
     alwaysNewTab: false,
     gistID: "",
     links: [],
@@ -114,7 +114,10 @@ import "./style.css";
       if (args.length == 0) redirect(link.url);
       else redirect(link.url + link.search + args.join(" "));
     } else {
-      commands[CONFIG["defaultCommand"]](args);
+      const defaultCommand = Object.hasOwn(commands, CONFIG.defaultCommand)
+        ? CONFIG.defaultCommand
+        : DEFAULT_CONFIG.defaultCommand;
+      commands[defaultCommand](args);
     }
 
     return false;
@@ -264,7 +267,7 @@ import "./style.css";
     for (let setting in config) {
       CONFIG[setting] = config[setting];
     }
-    CONFIG.gistID = gist;
+    CONFIG.gistID = gist ?? config.gistID ?? "";
 
     saveConfig();
     applyConfig();
@@ -469,7 +472,7 @@ import "./style.css";
 
     // Links
     link: (args) => {
-      switch (args.length) {
+      switch (Math.min(args.length, 3)) {
         case 0:
           displayMessage(
             `link is a builtin command<br>To search for "link" try g;link<br>`,
@@ -550,7 +553,7 @@ import "./style.css";
               CONFIG.links.push({
                 command: args[0],
                 url: url,
-                search: args[2] || "",
+                search: args.slice(2).join(";"),
               });
             } else {
               displayMessage("Invalid URL", 5000);
@@ -575,7 +578,7 @@ import "./style.css";
           break;
 
         case "import":
-          updateConfig(args[1]);
+          updateConfig(args.slice(1).join(";"));
           break;
 
         case "open":
@@ -614,167 +617,256 @@ import "./style.css";
       }
     },
 
+    // Help
+    help: () => {
+      newTab = true;
+      redirect("https://github.com/koryschneider/tab#readme");
+    },
+
     // Google
-    g: (args) => {
-      const url = "https://google.com",
-        search = "/search?q=";
-      if (args.length == 0) redirect(url);
+    'g': (args) => {
+      const url = 'https://google.com', search = '/search?q=';
+      if (args.length == 0) redirect(url)
       else redirect(buildURL(url, search, args));
     },
 
     // DuckDuckGo
-    dg: (args) => {
-      const url = "https://duckduckgo.com",
-        search = "/?q=";
-      if (args.length == 0) redirect(url);
+    'dg': (args) => {
+      const url = 'https://duckduckgo.com', search = '/?q=';
+      if (args.length == 0) redirect(url)
       else redirect(buildURL(url, search, args));
     },
 
-    // Youtube
-    y: (args) => {
-      const url = "https://youtube.com",
-        search = "/results?search_query=";
-      if (args.length == 0) {
-        redirect(url);
-      } else {
-        if (["subs", "s"].includes(args[0]))
-          redirect(url + "/feed/subscriptions");
-        else redirect(buildURL(url, search, args[0]));
+    // Reddit
+    'r': (args) => {
+      const url = 'https://reddit.com', search = '/r/';
+      let query = (args.length > 0) ? args[0] : '';
+
+      const validSort = (sort) => {
+        return (['hot', 'new', 'rising', 'controversial', 'top', 'gilded', 'wiki', 'promoted'].includes(sort))
+      };
+      const validRange = (range) => {
+        return (['day', 'week', 'month', 'year', 'all'].includes(range))
+      };
+
+      switch(args.length) {
+        // Given nothing
+        case 0:
+          redirect(url);
+          break;
+
+        // Given a subreddit
+        case 1:
+          redirect(buildURL(url, search, args[0]));
+          break;
+
+        // Given subreddit and sort
+        case 2:
+          query += (validSort(args[1]))
+            ? '/' + args[1]
+            : '';
+          redirect(url + search + query);
+          break;
+
+        // Given subreddit, sort and range
+        case 3:
+          if (['top', 'controversial'].includes(args[1])) {
+            query += (validRange(args[2]))
+              ? '/' + args[1] + '?t=' + args[2]
+              : '';
+          } else {
+            query += (validSort(args[1]))
+              ? '/' + args[1]
+              : '';
+          }
+          redirect(url + search + query);
+          break;
       }
     },
 
-    // GitHub
-    gh: (args) => {
-      const url = "https://github.com",
-        search = "/";
-      if (args.length == 0) redirect(url);
-      else redirect(url + search + args.join(""));
+    // Hacker News
+    'hn': (args) => {
+      const url = 'https://news.ycombinator.com';
+      if (args.length == 0) {
+        redirect(url);
+      } else {
+        switch(args[0]) {
+          case 'new':
+            redirect(url + '/newest');
+            break;
+
+          case 'comments':
+            redirect(url + '/newcomments');
+            break;
+
+          case 'show':
+            redirect(url + '/show');
+            break;
+
+          case 'ask':
+            redirect(url + '/ask');
+            break;
+
+          case 'jobs':
+            redirect(url + '/jobs');
+            break;
+
+          case 'submit':
+            redirect(url + '/submit');
+            break;
+        }
+      }
     },
 
-    // Okteto GitHub
-    gho: (args) => {
-      const url = "https://github.com/okteto",
-        search = "/";
-      if (args.length == 0) redirect(url);
-      else redirect(url + search + args.join(""));
+    // Youtube
+    'y': (args) => {
+      const url = 'https://youtube.com', search = '/results?search_query=';
+      if (args.length == 0) {
+        redirect(url);
+      } else {
+        if (['subs', 's'].includes(args[0]))
+          redirect(url + '/feed/subscriptions');
+        else
+          redirect(buildURL(url, search, args[0]));
+      }
+    },
+
+    // Wikipedia
+    'w': (args) => {
+      const url = 'https://wikipedia.org', search = '/w/index.php?title=Special:Search&search=';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
+    },
+
+    // GitHub
+    'gh': (args) => {
+      const url = 'https://github.com', search = '/';
+      if (args.length == 0) redirect(url)
+      else redirect(url + search + args.join(''));
+    },
+
+    // GitHub Gist
+    'gist': (args) => {
+      const url = 'https://gist.github.com', search = '/';
+      if (args.length == 0) redirect(url)
+      else redirect(url + search + args.join(''));
+    },
+
+    // Wolfram Alpha
+    'wa': (args) => {
+      const url = 'http://wolframalpha.com', search = '/input/?i=';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
+    },
+
+    // Netflix
+    'n': (args) => {
+      const url = 'https://netflix.com', search = '/search?q=';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
+    },
+
+    // Internet Movie Database
+    'imdb': (args) => {
+      const url = 'http://imdb.com', search = '/find?s=all&q=';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
     },
 
     // Google Maps
-    map: (args) => {
-      const url = "https://google.com/maps",
-        search = "/search/";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
+    'map': (args) => {
+      const url = 'https://google.com/maps', search = '/search/';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
     },
 
     // Google Drive
-    gd: (args) => {
-      const url = "https://drive.google.com",
-        search = "/drive/search?q=";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
+    'gd': (args) => {
+      const url = 'https://drive.google.com', search = '/drive/search?q=';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
     },
 
     // Google Calendar
-    gc: (args) => {
-      redirect("https://calendar.google.com");
+    'gc': (args) => {
+      redirect('https://calendar.google.com');
+    },
+
+    // Google Images
+    'img': (args) => {
+      const url = 'https://google.com', search = '/search?tbm=isch&q=';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
     },
 
     // Gmail
-    gm: (args) => {
-      const url = "https://mail.google.com",
-        search = "/mail/u/0/#search/";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
+    'gm': (args) => {
+      const url = 'https://mail.google.com', search = '/mail/u/0/#search/';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
     },
 
     // Google Keep
-    k: (args) => {
-      const url = "https://keep.google.com",
-        search = "/#search/text=";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
+    'k': (args) => {
+      const url = 'https://keep.google.com', search = '/#search/text=';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
+    },
+
+    // Trello
+    'tr': (args) => {
+      const url = 'https://trello.com', search = '/search?q=';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
+    },
+
+    // Dictionary
+    'dict': (args) => {
+      const url = 'http://dictionary.com', search = '/browse/';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
+    },
+
+    // Thesaurus
+    'thes': (args) => {
+      const url = 'http://thesaurus.com', search = '/browse/';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
     },
 
     // Amazon
-    a: (args) => {
-      const url = "https://amazon.es",
-        search = "/s/?field-keywords=";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
+    'a': (args) => {
+      const url = 'https://amazon.com', search = '/s/?field-keywords=';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
     },
 
-    // Google Cloud Platform
-    gcp: (args) => {
-      const url = "https://console.cloud.google.com",
-        search = "/search;q=";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
+    // Node package manager
+    'npm': (args) => {
+      const url = 'https://npmjs.org', search = '/search?q=';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
     },
 
-    cf: (args) => {
-      const url = "https://cloudflare.com",
-        search = "";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
+    // Python package index
+    'pypi': (args) => {
+      const url = 'https://pypi.org', search = '/search/?q=';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
     },
 
-    gpt: (args) => {
-      const url = "https://chat.openai.com/chat",
-        search = "";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
+    // Stack Overflow
+    'so': (args) => {
+      const url = 'https://stackoverflow.com', search = '/search?q=';
+      if (args.length == 0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')));
     },
 
-    k8s: (args) => {
-      const url = "https://kubernetes.io/docs/",
-        search = "search/?q=";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
-    },
-
-    aws: (args) => {
-      const url = "https://okteto.awsapps.com/start/#/";
-      redirect(url);
-    },
-
-    tf: (args) => {
-      const url = "https://app.terraform.io/app/organizations",
-        search = "?q=";
-      if (args.length == 0) redirect(url);
-      else redirect(buildURL(url, search, args.join(" ")));
-    },
-
-    cco: (args) => {
-      const url = "https://app.circleci.com/organization/github/okteto";
-      redirect(url);
-    },
-
-    jo: (args) => {
-      const url =
-        "https://okteto.atlassian.net/jira/software/c/projects/PLAT/boards/8";
-      redirect(url);
-    },
-
-    sheet: (args) => {
-      const url = "https://docs.google.com/spreadsheets/";
-      redirect(url);
-    },
-    s: (args) => {
-      const url = "https://app.slack.com/client/T2WRCR06N";
-      redirect(url);
-    },
-    n: (args) => {
-      const url = "https://www.notion.so/";
-      redirect(url);
-    },
-    p: (args) => {
-      const url = "https://product.okteto.dev/spaces/irespaldiza";
-      redirect(url);
-    },
-    z: (args) => {
-      const url = "https://us02web.zoom.us/myhome";
-      redirect(url);
-    },
+    // MDN web docs
+    'mdn': (args) => {
+      const url = 'https://developer.mozilla.org', search = '/search?q=';
+      if (args.length ==0) redirect(url)
+      else redirect(buildURL(url, search, args.join(' ')))
+    }
   };
 })(); // closure
