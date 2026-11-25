@@ -1,51 +1,56 @@
-const webpack = require('webpack');
+const path = require('node:path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
-const Critters = require('critters-webpack-plugin');
+const { Compilation } = require('webpack');
+
+const inlineBundle = {
+  apply(compiler) {
+    compiler.hooks.compilation.tap('InlineBundle', (compilation) => {
+      HtmlWebpackPlugin.getHooks(compilation).alterAssetTagGroups.tap('InlineBundle', (data) => {
+        for (const tag of [...data.headTags, ...data.bodyTags]) {
+          if (tag.tagName !== 'script' || !tag.attributes.src) continue;
+
+          const bundle = compilation.getAsset('bundle.js');
+          tag.innerHTML = bundle.source.source().toString().replace(/<\/script/gi, '<\\/script');
+          delete tag.attributes.src;
+          delete tag.attributes.defer;
+        }
+        return data;
+      });
+
+      compilation.hooks.processAssets.tap(
+        { name: 'InlineBundle', stage: Compilation.PROCESS_ASSETS_STAGE_REPORT },
+        () => compilation.deleteAsset('bundle.js'),
+      );
+    });
+  },
+};
 
 module.exports = {
-  entry: __dirname + '/src/index.js',
-
+  devtool: false,
+  entry: './src/index.js',
   output: {
     path: __dirname,
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: '',
   },
-
   module: {
     rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['env']
-          }
-        }
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
-      }
-    ]
+      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+    ],
   },
-
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/template.html',
-      filename: './index.html',
-      inlineSource: '.(js|css)$',
-      minify: {
-        collapseWhitespace: true,
-        removeComments: true,
-        removeRedundantAttributes: true,
-        removeScriptTypeAttributes: true,
-        useShortDoctype: true,
-      }
+      scriptLoading: 'blocking',
     }),
-    new HtmlWebpackInlineSourcePlugin(),
-    new Critters({
-      preload: 'body',
-    }),
-  ]
-}
+    inlineBundle,
+  ],
+  devServer: {
+    host: 'localhost',
+    static: {
+      directory: path.join(__dirname, 'img'),
+      publicPath: '/img',
+      watch: false,
+    },
+  },
+};

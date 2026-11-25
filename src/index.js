@@ -6,6 +6,7 @@ import "./style.css";
     defaultCommand: "g",
     bgColor: "#282828",
     textColor: "#ebdbb2",
+    caretColor: "auto",
     fontSize: "1.75em",
     clockSize: "2em",
     showClock: true,
@@ -153,6 +154,7 @@ import "./style.css";
     // Text and background colors
     document.body.style.backgroundColor = CONFIG.bgColor;
     document.body.style.color = CONFIG.textColor;
+    document.body.style.caretColor = CONFIG.caretColor;
     document.body.style.fontSize = CONFIG.fontSize;
 
     // Clock
@@ -361,6 +363,19 @@ import "./style.css";
             CONFIG["textColor"] = args[1];
           } else {
             displayMessage("Error: invalid hex value", 5000);
+          }
+          break;
+
+        case "caretColor":
+          if (args.length === 1) {
+            displayMessage(`Current caret color: ${CONFIG.caretColor}`, 8000);
+            break;
+          }
+
+          if (args[1] === "auto" || /^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(args[1])) {
+            CONFIG.caretColor = args[1];
+          } else {
+            displayMessage("Error: use a hex color or auto", 5000);
           }
           break;
 
